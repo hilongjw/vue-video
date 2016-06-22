@@ -82,7 +82,6 @@
 }
 .__cov-contrl-vol-box {
     display: flex;
-    padding-right: 1rem;
 }
 .__cov-contrl-vol-box:hover .__cov-contrl-vol-slider {
     width: 6rem;
@@ -177,19 +176,30 @@ video::-webkit-media-controls-enclosure {
                         <span class="__cov-contrl-video-time-text">{{video.displayTime}}</span>
                     </div>
                     <div class="__cov-contrl-vol-box">
-                        <button class="__cov-contrl-play-btn">
-                            <svg class="__cov-contrl-vol-btn-icon" viewBox="0 0 20 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <button class="__cov-contrl-play-btn">
+                        <svg class="__cov-contrl-vol-btn-icon" viewBox="0 0 41 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
-                                <title>Combined Shape</title>
+                                <title>vol</title>
                                 <desc>Created with Sketch.</desc>
                                 <defs>
-                                    <path d="M8.61522369,12 L20,0.615223689 L20,37.3847763 L8.61522369,26 L1.99201702,26 C0.891856397,26 0,25.1029399 0,23.9941413 L0,14.0058587 C0,12.8980535 0.900176167,12 1.99201702,12 L8.61522369,12 Z" id="vol-1"></path>
-                                    <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="20" height="36.7695526" fill="white">
-                                        <use xlink:href="#vol-1"></use>
-                                    </mask>
+                                    <path d="M8.61522369,12 L20,0.615223689 L20,37.3847763 L8.61522369,26 L1.99201702,26 C0.891856397,26 0,25.1029399 0,23.9941413 L0,14.0058587 C0,12.8980535 0.900176167,12 1.99201702,12 L8.61522369,12 L8.61522369,12 Z" id="cov-vol"></path>
                                 </defs>
-                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <use id="Combined-Shape" stroke="#FFf" mask="url(#mask-2)" stroke-width="2" fill="#fff" xlink:href="#vol-1"></use>
+                                <g id="Page-1" stroke="none" stroke-width="2" fill="none" fill-rule="evenodd">
+                                    <g id="vol" transform="translate(2.000000, 3.000000)">
+                                        <g id="cov-vol-icon">
+                                            <g id="Combined-Shape-Clipped">
+                                                <path d="M25,29.5538997 C28.4589093,27.6757536 31.2629093,23.2984641 31.2629093,19.7769499 C31.2629093,16.2554357 28.4589093,11.8781461 25,10" id="vol-range-2" stroke="#FFFFFF"></path>
+                                                <path d="M28,35.5538997 C33.5816016,32.5231573 38.1063837,25.4595762 38.1063837,19.7769499 C38.1063837,14.0943235 33.5816016,7.03074247 28,4" id="vol-range-2" stroke="#FFFFFF"></path>
+                                                <mask id="mask-2" fill="white">
+                                                    <use xlink:href="#cov-vol"></use>
+                                                </mask>
+                                                <use id="vol-path" stroke="#FFFFFF" stroke-width="3" xlink:href="#cov-vol"></use>
+                                                <g id="Combined-Shape" mask="url(#mask-2)" stroke="#FFFFFF" stroke-width="2" fill="#FFFFFF">
+                                                    <path d="M8.61522369,12 L20,0.615223689 L20,37.3847763 L8.61522369,26 L1.99201702,26 C0.891856397,26 0,25.1029399 0,23.9941413 L0,14.0058587 C0,12.8980535 0.900176167,12 1.99201702,12 L8.61522369,12 L8.61522369,12 Z" id="cov-vol"></path>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
                                 </g>
                             </svg>
                         </button>
