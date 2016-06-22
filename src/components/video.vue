@@ -2,6 +2,7 @@
 .__cov-video-container {
     position: relative;
     width: 100%;
+    background-color: #000;
 }
 
 .__cov-video {
@@ -13,10 +14,12 @@
 .__cov-contrl-content {
     position: absolute;
     display: flex;
+    left: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.41);
     height: 2rem;
     width: 100%;
+    z-index: 2147483647;
 }
 .__cov-contrl-play-btn {
     position: relative;
@@ -122,13 +125,22 @@
     line-height: 2rem;
     font-size: .8rem;
 }
+::-webkit-media-controls {
+  display:none !important;
+}
+video::-webkit-media-controls {
+  display:none !important;
+}
+video::-webkit-media-controls-enclosure {
+  display:none !important;
+}
 </style>
 <template>
     <div id="app">
         <div class="container">
             <div class="__cov-video-container">
-                <video class="__cov-video">
-                    <source id="covVideoSrc_mp4" src="http://120.52.73.90/vjs.zencdn.net/v/oceans.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+                <video class="__cov-video" poster="http://covteam.u.qiniudn.com/poster.png">
+                    <source id="covVideoSrc_mp4" src="http://covteam.u.qiniudn.com/oceans.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
                     </source>
                 </video>
                 <div class="__cov-contrl-content">
@@ -157,6 +169,13 @@
                             </g>
                         </svg>
                     </button>
+                    <div class="__cov-contrl-video-slider" @mousedown="videoMove">
+                        <div class="__cov-contrl-video-inner" :style="{ 'transform': `translate3d(${video.pos.current}px, 0, 0)`}"></div>
+                        <div class="__cov-contrl-video-rail"></div>
+                    </div>
+                    <div class="__cov-contrl-video-time">
+                        <span class="__cov-contrl-video-time-text">{{video.displayTime}}</span>
+                    </div>
                     <div class="__cov-contrl-vol-box">
                         <button class="__cov-contrl-play-btn">
                             <svg class="__cov-contrl-vol-btn-icon" viewBox="0 0 20 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -178,13 +197,6 @@
                             <div class="__cov-contrl-vol-inner" :style="{ 'transform': `translate3d(${volume.pos.current}px, 0, 0)`}"></div>
                             <div class="__cov-contrl-vol-rail"></div>
                         </div>
-                    </div>
-                    <div class="__cov-contrl-video-slider" @mousedown="videoMove">
-                        <div class="__cov-contrl-video-inner" :style="{ 'transform': `translate3d(${video.pos.current}px, 0, 0)`}"></div>
-                        <div class="__cov-contrl-video-rail"></div>
-                    </div>
-                    <div class="__cov-contrl-video-time">
-                        <span class="__cov-contrl-video-time-text">{{video.displayTime}}</span>
                     </div>
                     <button class="__cov-contrl-play-btn" @click="fullScreen">
                         <svg class="__cov-contrl-vol-btn-icon" viewBox="0 0 33 33" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -265,19 +277,20 @@ export default {
     },
     methods: {
         init () {
-            this.volume.$volBox = this.$el.getElementsByClassName('__cov-contrl-vol-slider')[0]
-            const $volInner = this.volume.$volBox.getElementsByClassName('__cov-contrl-vol-inner')[0]
-            this.volume.pos.start = this.volume.$volBox.getBoundingClientRect().left
-            this.volume.pos.width = this.volume.$volBox.getBoundingClientRect().width
+            const $volBox = this.$el.getElementsByClassName('__cov-contrl-vol-slider')[0]
+            const $volInner = $volBox.getElementsByClassName('__cov-contrl-vol-inner')[0]
+            this.volume.$volBox = $volBox
             this.volume.pos.innerWidth = $volInner.getBoundingClientRect().width
+            this.volume.pos.start = $volBox.getBoundingClientRect().left
+            this.volume.pos.width = $volBox.getBoundingClientRect().width - this.volume.pos.innerWidth
         },
         initVideo () {
             const $videoSlider = this.$el.getElementsByClassName('__cov-contrl-video-slider')[0]
             const $videoInner = $videoSlider.getElementsByClassName('__cov-contrl-video-inner')[0]
             this.$videoSlider = $videoSlider
             this.video.pos.start = $videoSlider.getBoundingClientRect().left
-            this.video.pos.width = $videoSlider.getBoundingClientRect().width
             this.video.pos.innerWidth = $videoInner.getBoundingClientRect().width
+            this.video.pos.width = $videoSlider.getBoundingClientRect().width - this.video.pos.innerWidth
             this.getTime()
         },
         getTime () {
@@ -291,6 +304,9 @@ export default {
             if (this.$video) {
                 if (this.state.playing) {
                     this.$video.play()
+                    this.$video.addEventListener('waiting', (e) => {
+                        console.log(e)
+                    })
                     this.$video.addEventListener('timeupdate', this.timeline)
                 } else {
                     this.$video.pause()
@@ -298,6 +314,7 @@ export default {
             }
         },
         timeline () {
+            // console.log(this.$video.readyState)
             const percent = this.$video.currentTime / this.$video.duration
             this.video.pos.current = (this.video.pos.width * percent).toFixed(3)
             this.video.displayTime = timeParse(this.$video.duration - this.$video.currentTime)
@@ -316,8 +333,13 @@ export default {
             }
         },
         fullScreen () {
-            this.state.fullScreen = true
-            this.$video.webkitRequestFullScreen()
+            if (!this.state.fullScreen) {
+                this.state.fullScreen = true
+                this.$video.webkitRequestFullScreen()
+            } else {
+                this.state.fullScreen = false
+                document.webkitCancelFullScreen()
+            }
         },
         mouseMoveAction (e) {
             if (this.volume.moving) {
