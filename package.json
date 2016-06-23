@@ -1,7 +1,7 @@
 {
-  "name": "vdeo",
+  "name": "vue-video",
   "version": "1.0.0",
-  "description": "A Vue.js project",
+  "description": "A Vue.js video player",
   "author": "Awe <hilongjw@gmail.com>",
   "private": true,
   "scripts": {

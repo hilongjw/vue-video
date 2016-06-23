@@ -133,16 +133,25 @@ video::-webkit-media-controls {
 video::-webkit-media-controls-enclosure {
   display:none !important;
 }
+.fade-transition {
+    transition: opacity .3s ease;
+}
+.fade-enter{
+    opacity: 1;
+}
+.fade-leave {
+    opacity: 0;
+}
 </style>
 <template>
     <div id="app">
         <div class="container">
-            <div class="__cov-video-container">
+            <div class="__cov-video-container" @mouseenter="mouseEnterVideo" @mouseleave="mouseLeaveVideo">
                 <video class="__cov-video" poster="http://covteam.u.qiniudn.com/poster.png">
                     <source id="covVideoSrc_mp4" src="http://covteam.u.qiniudn.com/oceans.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
                     </source>
                 </video>
-                <div class="__cov-contrl-content">
+                <div class="__cov-contrl-content" transition="fade" v-show="state.contrlShow">
                     <button class="__cov-contrl-play-btn" @click="play">
                         <svg class="__cov-contrl-play-btn-icon" v-show="!state.playing" viewBox="0 0 47 57" version="1.1" xmlns="http://www.w3.org/2000/svg">
                             <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
@@ -168,7 +177,7 @@ video::-webkit-media-controls-enclosure {
                             </g>
                         </svg>
                     </button>
-                    <div class="__cov-contrl-video-slider" @mousedown="videoMove">
+                    <div class="__cov-contrl-video-slider" @click="slideClick" @mousedown="videoMove">
                         <div class="__cov-contrl-video-inner" :style="{ 'transform': `translate3d(${video.pos.current}px, 0, 0)`}"></div>
                         <div class="__cov-contrl-video-rail"></div>
                     </div>
@@ -268,6 +277,7 @@ export default {
                 }
             },
             state: {
+                contrlShow: true,
                 vol: 0.5,
                 currentTime: 0,
                 fullScreen: false,
@@ -303,6 +313,17 @@ export default {
             this.video.pos.width = $videoSlider.getBoundingClientRect().width - this.video.pos.innerWidth
             this.getTime()
         },
+        mouseEnterVideo () {
+            this.state.contrlShow = true
+        },
+        mouseLeaveVideo () {
+            setTimeout(() => {
+                this.state.contrlShow = false
+            }, 2000)
+        },
+        toggleContrlShow () {
+            this.state.contrlShow = !this.state.contrlShow
+        },
         getTime () {
             this.video.len = this.$video.duration
         },
@@ -318,6 +339,9 @@ export default {
                         console.log(e)
                     })
                     this.$video.addEventListener('timeupdate', this.timeline)
+                    this.$video.addEventListener('ended', (e) => {
+                        this.state.playing = false
+                    })
                 } else {
                     this.$video.pause()
                 }
@@ -337,6 +361,10 @@ export default {
             this.initVideo()
             this.video.moving = true
         },
+        slideClick (e) {
+            console.log(e)
+            this.videoSlideMove(e)
+        },
         setVol (val) {
             if (this.$video) {
                 this.$video.volume = val
@@ -353,18 +381,24 @@ export default {
         },
         mouseMoveAction (e) {
             if (this.volume.moving) {
-                const x = getMousePosition(e) - this.volume.pos.start
-                if (x > 0 && x < this.volume.pos.width) {
-                    this.volume.pos.current = x
-                    this.setVol(x / this.volume.pos.width)
-                }
+                this.volSlideMove(e)
             }
             if (this.video.moving) {
-                const x = getMousePosition(e) - this.video.pos.start
-                if (x > 0 && x < this.video.pos.width) {
-                    this.video.pos.current = x
-                    this.setVideoByTime(x / this.video.pos.width)
-                }
+                this.videoSlideMove(e)
+            }
+        },
+        volSlideMove (e) {
+            const x = getMousePosition(e) - this.volume.pos.start
+            if (x > 0 && x < this.volume.pos.width) {
+                this.volume.pos.current = x
+                this.setVol(x / this.volume.pos.width)
+            }
+        },
+        videoSlideMove (e) {
+            const x = getMousePosition(e) - this.video.pos.start
+            if (x > 0 && x < this.video.pos.width) {
+                this.video.pos.current = x
+                this.setVideoByTime(x / this.video.pos.width)
             }
         },
         mouseUpAction (e) {
