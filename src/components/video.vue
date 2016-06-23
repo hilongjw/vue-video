@@ -276,6 +276,9 @@ export default {
                     current: 0
                 }
             },
+            tmp: {
+                contrlHideTimer: null
+            },
             state: {
                 contrlShow: true,
                 vol: 0.5,
@@ -314,12 +317,21 @@ export default {
             this.getTime()
         },
         mouseEnterVideo () {
+            if (this.contrlHideTimer) {
+                clearTimeout(this.contrlHideTimer)
+                this.contrlHideTimer = null
+            }
             this.state.contrlShow = true
         },
-        mouseLeaveVideo () {
-            setTimeout(() => {
+        mouseLeaveVideo (e) {
+            console.log(e)
+            if (this.contrlHideTimer) {
+                clearTimeout(this.contrlHideTimer)
+            }
+            this.contrlHideTimer = setTimeout(() => {
                 this.state.contrlShow = false
-            }, 2000)
+                this.contrlHideTimer = null
+            }, 3000)
         },
         toggleContrlShow () {
             this.state.contrlShow = !this.state.contrlShow
@@ -378,6 +390,7 @@ export default {
                 this.state.fullScreen = false
                 document.webkitCancelFullScreen()
             }
+            setTimeout(this.initVideo, 200)
         },
         mouseMoveAction (e) {
             if (this.volume.moving) {
