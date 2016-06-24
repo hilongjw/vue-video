@@ -55,7 +55,7 @@
     position: relative;
     display: inline-block;
     height: 100%;
-    width: 0;
+    width: 6rem;
     overflow: hidden;
     transition: all .2s ease-in;
 }
@@ -257,6 +257,9 @@ const timeParse = (sec) => {
 export default {
     data () {
         return {
+            options: {
+                volume: 0.6
+            },
             $video: null,
             video: {
                 $videoSlider: null,
@@ -313,6 +316,9 @@ export default {
             this.initVol()
             this.initVideo()
             this.initPlayer()
+            const vol = this.options.volume || 0.5
+            this.volume.pos.current = this.volume.pos.width * vol
+            this.setVol(vol)
         },
         initPlayer () {
             const $player = this.$el.getElementsByClassName('__cov-video-container')[0]
@@ -326,6 +332,7 @@ export default {
             this.volume.pos.innerWidth = $volInner.getBoundingClientRect().width
             this.volume.pos.start = $volBox.getBoundingClientRect().left
             this.volume.pos.width = $volBox.getBoundingClientRect().width - this.volume.pos.innerWidth
+            console.log(this.volume.pos.width)
         },
         initVideo () {
             const $videoSlider = this.$el.getElementsByClassName('__cov-contrl-video-slider')[0]
@@ -350,7 +357,7 @@ export default {
             this.tmp.contrlHideTimer = setTimeout(() => {
                 this.state.contrlShow = false
                 this.tmp.contrlHideTimer = null
-            }, 3000)
+            }, 2000)
         },
         toggleContrlShow () {
             this.state.contrlShow = !this.state.contrlShow
@@ -367,25 +374,11 @@ export default {
                 if (this.state.playing) {
                     this.$video.play()
                     this.mouseLeaveVideo()
-                    this.$video.addEventListener('waiting', (e) => {
-                        console.log('waiting')
-                    })
                     this.$video.addEventListener('timeupdate', this.timeline)
                     this.$video.addEventListener('ended', (e) => {
                         this.state.playing = false
                         this.video.pos.current = 0
                         this.$video.currentTime = 0
-                    })
-                    this.$video.addEventListener('seeking', (e) => {
-                        console.log(e)
-                    })
-                    this.$video.addEventListener('progress', (e) => {
-                        if (e.lengthComputable) {
-                            console.log(e.loaded / e.total)
-                        } else {
-                            console.log('can\'t')
-                        }
-                        // console.log(e)
                     })
                 } else {
                     this.$video.pause()
@@ -399,7 +392,7 @@ export default {
             this.video.displayTime = timeParse(this.$video.duration - this.$video.currentTime)
         },
         volMove (e) {
-            this.init()
+            this.initVol()
             this.volume.moving = true
         },
         videoMove (e) {
