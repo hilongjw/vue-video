@@ -150,8 +150,8 @@ video::-webkit-media-controls-enclosure {
     <div id="app">
         <div class="container">
             <div class="__cov-video-container" @mouseenter="mouseEnterVideo" @mouseleave="mouseLeaveVideo">
-                <video :class="{ 'hide-cursor': !state.contrlShow }" class="__cov-video" poster="http://covteam.u.qiniudn.com/poster.png">
-                    <source id="covVideoSrc_mp4" src="http://covteam.u.qiniudn.com/oceans.mp4" type='video/mp4'>
+                <video :class="{ 'hide-cursor': !state.contrlShow }" class="__cov-video" :poster="options.poster">
+                    <source v-for="source in options.sources" :src="source.src" :type="source.type">
                     </source>
                 </video>
                 <div class="__cov-contrl-content" transition="fade" v-show="state.contrlShow">
@@ -200,8 +200,8 @@ video::-webkit-media-controls-enclosure {
                                     <g id="vol" transform="translate(2.000000, 3.000000)">
                                         <g id="cov-vol-icon">
                                             <g id="Combined-Shape-Clipped">
-                                                <path d="M25,29.5538997 C28.4589093,27.6757536 31.2629093,23.2984641 31.2629093,19.7769499 C31.2629093,16.2554357 28.4589093,11.8781461 25,10" id="vol-range-2" stroke="#FFFFFF"></path>
-                                                <path d="M28,35.5538997 C33.5816016,32.5231573 38.1063837,25.4595762 38.1063837,19.7769499 C38.1063837,14.0943235 33.5816016,7.03074247 28,4" id="vol-range-2" stroke="#FFFFFF"></path>
+                                                <path v-show="volume.percent > 1" d="M25,29.5538997 C28.4589093,27.6757536 31.2629093,23.2984641 31.2629093,19.7769499 C31.2629093,16.2554357 28.4589093,11.8781461 25,10" id="vol-range-2" stroke="#FFFFFF"></path>
+                                                <path v-show="volume.percent > 70" d="M28,35.5538997 C33.5816016,32.5231573 38.1063837,25.4595762 38.1063837,19.7769499 C38.1063837,14.0943235 33.5816016,7.03074247 28,4" id="vol-range-2" stroke="#FFFFFF"></path>
                                                 <mask id="mask-2" fill="white">
                                                     <use xlink:href="#cov-vol"></use>
                                                 </mask>
@@ -258,7 +258,12 @@ export default {
     data () {
         return {
             options: {
-                volume: 0.6
+                volume: 0.6,
+                poster: 'http://covteam.u.qiniudn.com/poster.png',
+                sources: [{
+                    src: 'http://covteam.u.qiniudn.com/oceans.mp4',
+                    type: 'video/mp4'
+                }]
             },
             $video: null,
             video: {
@@ -317,7 +322,7 @@ export default {
             this.initVideo()
             this.initPlayer()
             const vol = this.options.volume || 0.5
-            this.volume.pos.current = this.volume.pos.width * vol
+            this.volume.pos.current = this.volume.pos.width * vol - this.volume.pos.innerWidth * 0.5
             this.setVol(vol)
         },
         initPlayer () {
@@ -332,7 +337,6 @@ export default {
             this.volume.pos.innerWidth = $volInner.getBoundingClientRect().width
             this.volume.pos.start = $volBox.getBoundingClientRect().left
             this.volume.pos.width = $volBox.getBoundingClientRect().width - this.volume.pos.innerWidth
-            console.log(this.volume.pos.width)
         },
         initVideo () {
             const $videoSlider = this.$el.getElementsByClassName('__cov-contrl-video-slider')[0]
@@ -405,6 +409,7 @@ export default {
         },
         setVol (val) {
             if (this.$video) {
+                this.volume.percent = val * 100
                 this.$video.volume = val
             }
         },
