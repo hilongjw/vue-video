@@ -142,13 +142,16 @@ video::-webkit-media-controls-enclosure {
 .fade-leave {
     opacity: 0;
 }
+.hide-cursor {
+    cursor: none;
+}
 </style>
 <template>
     <div id="app">
         <div class="container">
             <div class="__cov-video-container" @mouseenter="mouseEnterVideo" @mouseleave="mouseLeaveVideo">
-                <video class="__cov-video" poster="http://covteam.u.qiniudn.com/poster.png">
-                    <source id="covVideoSrc_mp4" src="http://covteam.u.qiniudn.com/oceans.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+                <video :class="{ 'hide-cursor': !state.contrlShow }" class="__cov-video" poster="http://covteam.u.qiniudn.com/poster.png">
+                    <source id="covVideoSrc_mp4" src="http://covteam.u.qiniudn.com/oceans.mp4" type='video/mp4'>
                     </source>
                 </video>
                 <div class="__cov-contrl-content" transition="fade" v-show="state.contrlShow">
@@ -232,8 +235,11 @@ video::-webkit-media-controls-enclosure {
     </div>
 </template>
 <script>
-const getMousePosition = function (e) {
-    return e.pageX
+const getMousePosition = function (e, type = 'x') {
+    if (type === 'x') {
+        return e.pageX
+    }
+    return e.pageY
 }
 const pad = (val) => {
     val = Math.floor(val)
@@ -276,6 +282,10 @@ export default {
                     current: 0
                 }
             },
+            player: {
+                $player: null,
+                pos: null
+            },
             tmp: {
                 contrlHideTimer: null
             },
@@ -290,7 +300,7 @@ export default {
     },
     ready () {
         this.$video = this.$el.getElementsByTagName('video')[0]
-        this.initVideo()
+        this.init()
         document.body.addEventListener('mousemove', this.mouseMoveAction, false)
         document.body.addEventListener('mouseup', this.mouseUpAction, false)
     },
@@ -300,6 +310,16 @@ export default {
     },
     methods: {
         init () {
+            this.initVol()
+            this.initVideo()
+            this.initPlayer()
+        },
+        initPlayer () {
+            const $player = this.$el.getElementsByClassName('__cov-video-container')[0]
+            this.player.pos = $player.getBoundingClientRect()
+            this.player.$player = $player
+        },
+        initVol () {
             const $volBox = this.$el.getElementsByClassName('__cov-contrl-vol-slider')[0]
             const $volInner = $volBox.getElementsByClassName('__cov-contrl-vol-inner')[0]
             this.volume.$volBox = $volBox
@@ -317,20 +337,19 @@ export default {
             this.getTime()
         },
         mouseEnterVideo () {
-            if (this.contrlHideTimer) {
-                clearTimeout(this.contrlHideTimer)
-                this.contrlHideTimer = null
+            if (this.tmp.contrlHideTimer) {
+                clearTimeout(this.tmp.contrlHideTimer)
+                this.tmp.contrlHideTimer = null
             }
             this.state.contrlShow = true
         },
         mouseLeaveVideo (e) {
-            console.log(e)
-            if (this.contrlHideTimer) {
-                clearTimeout(this.contrlHideTimer)
+            if (this.tmp.contrlHideTimer) {
+                clearTimeout(this.tmp.contrlHideTimer)
             }
-            this.contrlHideTimer = setTimeout(() => {
+            this.tmp.contrlHideTimer = setTimeout(() => {
                 this.state.contrlShow = false
-                this.contrlHideTimer = null
+                this.tmp.contrlHideTimer = null
             }, 3000)
         },
         toggleContrlShow () {
@@ -347,12 +366,26 @@ export default {
             if (this.$video) {
                 if (this.state.playing) {
                     this.$video.play()
+                    this.mouseLeaveVideo()
                     this.$video.addEventListener('waiting', (e) => {
-                        console.log(e)
+                        console.log('waiting')
                     })
                     this.$video.addEventListener('timeupdate', this.timeline)
                     this.$video.addEventListener('ended', (e) => {
                         this.state.playing = false
+                        this.video.pos.current = 0
+                        this.$video.currentTime = 0
+                    })
+                    this.$video.addEventListener('seeking', (e) => {
+                        console.log(e)
+                    })
+                    this.$video.addEventListener('progress', (e) => {
+                        if (e.lengthComputable) {
+                            console.log(e.loaded / e.total)
+                        } else {
+                            console.log('can\'t')
+                        }
+                        // console.log(e)
                     })
                 } else {
                     this.$video.pause()
@@ -399,6 +432,23 @@ export default {
             if (this.video.moving) {
                 this.videoSlideMove(e)
             }
+            this.contrlHider(e)
+        },
+        contrlHider (e) {
+            const x = getMousePosition(e, 'x')
+            const y = getMousePosition(e, 'y')
+            if (!this.player.pos) return
+            if (x > this.player.pos.left &&
+                x < this.player.pos.left + this.player.pos.width
+            ) {
+                if (
+                    y > this.player.pos.top + this.player.pos.height * 0.6 &&
+                    y < this.player.pos.top + this.player.pos.height
+                ) {
+                    return this.mouseEnterVideo()
+                }
+            }
+            return this.mouseLeaveVideo()
         },
         volSlideMove (e) {
             const x = getMousePosition(e) - this.volume.pos.start
