@@ -262,7 +262,7 @@ export default {
             default () {
                 return {
                     autoplay: false,
-                    volume: 0.6,
+                    volume: 0.9,
                     poster: ''
                 }
             }
@@ -330,7 +330,7 @@ export default {
             this.initVol()
             this.initVideo()
             this.initPlayer()
-            const vol = this.options.volume || 0.5
+            const vol = this.options.volume || 0.9
             this.setVol(vol)
         },
         initPlayer () {
