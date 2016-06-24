@@ -5,8 +5,8 @@
 ## Demo
 
 live demo is here: [https://hilongjw.github.io/vue-video/ocean.html](https://hilongjw.github.io/vue-video/ocean.html )
-![](https://github.com/hilongjw/vue-video/blob/master/preview.png)
-![](https://github.com/hilongjw/vue-video/blob/master/preview2.png)
+![](https://raw.githubusercontent.com/hilongjw/vue-video/master/preview.png)
+![](https://raw.githubusercontent.com/hilongjw/vue-video/master/preview2.png)
 
 
 ## Instllation
