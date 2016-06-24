@@ -1,0 +1,6 @@
+{
+  "name": "Vue-video",
+  "tagline": "A HTML5 video player component for Vue.js",
+  "body": "# vue-video\r\n\r\n> A HTML5 video player component for Vue.js\r\n\r\n## Demo\r\n![](https://github.com/hilongjw/vue-video/blob/master/preview.png)\r\n![](https://github.com/hilongjw/vue-video/blob/master/preview2.png)\r\n\r\n## Usage\r\n\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
