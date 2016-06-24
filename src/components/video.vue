@@ -151,7 +151,7 @@ video::-webkit-media-controls-enclosure {
         <div class="container">
             <div class="__cov-video-container" @mouseenter="mouseEnterVideo" @mouseleave="mouseLeaveVideo">
                 <video :class="{ 'hide-cursor': !state.contrlShow }" class="__cov-video" :poster="options.poster">
-                    <source v-for="source in options.sources" :src="source.src" :type="source.type">
+                    <source v-for="source in sources" :src="source.src" :type="source.type">
                     </source>
                 </video>
                 <div class="__cov-contrl-content" transition="fade" v-show="state.contrlShow">
@@ -255,17 +255,21 @@ const timeParse = (sec) => {
     return pad(min) + ':' + pad(sec)
 }
 export default {
+    props: {
+        sources: Array,
+        options: {
+            type: Object,
+            default () {
+                return {
+                    autoplay: false,
+                    volume: 0.6,
+                    poster: ''
+                }
+            }
+        }
+    },
     data () {
         return {
-            options: {
-                autoplay: true,
-                volume: 0.6,
-                poster: 'http://covteam.u.qiniudn.com/poster.png',
-                sources: [{
-                    src: 'http://covteam.u.qiniudn.com/oceans.mp4',
-                    type: 'video/mp4'
-                }]
-            },
             $video: null,
             video: {
                 $videoSlider: null,
@@ -394,7 +398,6 @@ export default {
             }
         },
         timeline () {
-            // console.log(this.$video.readyState)
             const percent = this.$video.currentTime / this.$video.duration
             this.video.pos.current = (this.video.pos.width * percent).toFixed(3)
             this.video.displayTime = timeParse(this.$video.duration - this.$video.currentTime)
@@ -408,7 +411,6 @@ export default {
             this.video.moving = true
         },
         slideClick (e) {
-            console.log(e)
             this.videoSlideMove(e)
         },
         setVol (val) {

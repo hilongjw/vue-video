@@ -15,13 +15,28 @@ body {
 <template>
     <div id="app">
         <div class="container">
-            <vuedio></vuedio>
+            <vuedio :sources="video.sources"></vuedio>
         </div>
     </div>
 </template>
 <script>
 import vuedio from './components/video.vue'
 export default {
+    data () {
+        return {
+            video: {
+                sources: [{
+                    src: 'http://covteam.u.qiniudn.com/oceans.mp4',
+                    type: 'video/mp4'
+                }],
+                options: {
+                    autoplay: true,
+                    volume: 0.6,
+                    poster: 'http://covteam.u.qiniudn.com/poster.png'
+                }
+            }
+        }
+    },
     components: {
         vuedio
     }
