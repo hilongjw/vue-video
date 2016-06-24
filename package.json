@@ -1,9 +1,20 @@
 {
   "name": "vue-video",
-  "version": "1.0.0",
-  "description": "A Vue.js video player",
+  "version": "0.1.0",
+  "description": "A HTML5 video player for Vue.js",
   "author": "Awe <hilongjw@gmail.com>",
-  "private": true,
+  "main": "src/components/video.vue",
+   "keywords": [
+    "vue",
+    "video",
+    "video player",
+    "html5"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hilongjw/vue-video/issues"
+  },
+  "homepage": "https://github.com/hilongjw/vue-video#readme",
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
