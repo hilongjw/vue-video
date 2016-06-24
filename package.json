@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "A HTML5 video player for Vue.js",
   "author": "Awe <hilongjw@gmail.com>",
-  "main": "src/components/video.vue",
+  "main": "video.vue",
    "keywords": [
     "vue",
     "video",
