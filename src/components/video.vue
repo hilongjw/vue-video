@@ -188,7 +188,7 @@ video::-webkit-media-controls-enclosure {
                         <span class="__cov-contrl-video-time-text">{{video.displayTime}}</span>
                     </div>
                     <div class="__cov-contrl-vol-box">
-                    <button class="__cov-contrl-play-btn">
+                    <button class="__cov-contrl-play-btn" @click="volMuted">
                         <svg class="__cov-contrl-vol-btn-icon" viewBox="0 0 41 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
                                 <title>vol</title>
@@ -200,8 +200,8 @@ video::-webkit-media-controls-enclosure {
                                     <g id="vol" transform="translate(2.000000, 3.000000)">
                                         <g id="cov-vol-icon">
                                             <g id="Combined-Shape-Clipped">
-                                                <path v-show="volume.percent > 1" d="M25,29.5538997 C28.4589093,27.6757536 31.2629093,23.2984641 31.2629093,19.7769499 C31.2629093,16.2554357 28.4589093,11.8781461 25,10" id="vol-range-2" stroke="#FFFFFF"></path>
-                                                <path v-show="volume.percent > 70" d="M28,35.5538997 C33.5816016,32.5231573 38.1063837,25.4595762 38.1063837,19.7769499 C38.1063837,14.0943235 33.5816016,7.03074247 28,4" id="vol-range-2" stroke="#FFFFFF"></path>
+                                                <path v-show="volume.percent > 1 && !volume.muted" d="M25,29.5538997 C28.4589093,27.6757536 31.2629093,23.2984641 31.2629093,19.7769499 C31.2629093,16.2554357 28.4589093,11.8781461 25,10" id="vol-range-2" stroke="#FFFFFF"></path>
+                                                <path v-show="volume.percent > 70 && !volume.muted" d="M28,35.5538997 C33.5816016,32.5231573 38.1063837,25.4595762 38.1063837,19.7769499 C38.1063837,14.0943235 33.5816016,7.03074247 28,4" id="vol-range-2" stroke="#FFFFFF"></path>
                                                 <mask id="mask-2" fill="white">
                                                     <use xlink:href="#cov-vol"></use>
                                                 </mask>
@@ -215,7 +215,7 @@ video::-webkit-media-controls-enclosure {
                                 </g>
                             </svg>
                         </button>
-                        <div class="__cov-contrl-vol-slider" @mousedown="volMove">
+                        <div class="__cov-contrl-vol-slider" @click="volSlideClick" @mousedown="volMove">
                             <div class="__cov-contrl-vol-inner" :style="{ 'transform': `translate3d(${volume.pos.current}px, 0, 0)`}"></div>
                             <div class="__cov-contrl-vol-rail"></div>
                         </div>
@@ -286,6 +286,7 @@ export default {
             },
             volume: {
                 $volBox: null,
+                muted: false,
                 percent: 60,
                 moving: false,
                 pos: {
@@ -330,7 +331,6 @@ export default {
             this.initVideo()
             this.initPlayer()
             const vol = this.options.volume || 0.5
-            this.volume.pos.current = this.volume.pos.width * vol - this.volume.pos.innerWidth * 0.5
             this.setVol(vol)
         },
         initPlayer () {
@@ -413,8 +413,16 @@ export default {
         slideClick (e) {
             this.videoSlideMove(e)
         },
+        volSlideClick (e) {
+            this.volSlideMove(e)
+        },
+        volMuted () {
+            this.$video.muted = !this.$video.muted
+            this.volume.muted = this.$video.muted
+        },
         setVol (val) {
             if (this.$video) {
+                this.volume.pos.current = val * this.volume.pos.width
                 this.volume.percent = val * 100
                 this.$video.volume = val
             }
@@ -457,7 +465,6 @@ export default {
         volSlideMove (e) {
             const x = getMousePosition(e) - this.volume.pos.start
             if (x > 0 && x < this.volume.pos.width) {
-                this.volume.pos.current = x
                 this.setVol(x / this.volume.pos.width)
             }
         },
