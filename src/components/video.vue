@@ -258,6 +258,7 @@ export default {
     data () {
         return {
             options: {
+                autoplay: true,
                 volume: 0.6,
                 poster: 'http://covteam.u.qiniudn.com/poster.png',
                 sources: [{
@@ -309,6 +310,9 @@ export default {
     ready () {
         this.$video = this.$el.getElementsByTagName('video')[0]
         this.init()
+        if (this.options.autoplay) {
+            this.play()
+        }
         document.body.addEventListener('mousemove', this.mouseMoveAction, false)
         document.body.addEventListener('mouseup', this.mouseUpAction, false)
     },
