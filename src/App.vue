@@ -11,6 +11,20 @@ body {
     width: 60rem;
     background: #ccc;
 }
+@media all and (max-width: 768px) {
+    .container {
+        display: inline-block;
+        width: 100%;
+        background: #ccc;
+    }
+    .__cov-video-container {
+        width: 100%;
+        height: 15rem;
+    }
+    .__cov-contrl-vol-slider {
+        width: 3rem;
+    }
+}
 </style>
 <template>
     <div id="app">

@@ -85,15 +85,13 @@
 .__cov-contrl-vol-box {
     display: flex;
 }
-.__cov-contrl-vol-box:hover .__cov-contrl-vol-slider {
-    width: 6rem;
-}
 .__cov-contrl-video-slider {
     position: relative;
     display: inline-block;
     height: 100%;
     width: 100%;
     overflow: hidden;
+    margin: 0 .5rem;
     transition: all .2s ease-in;
 }
 .__cov-contrl-video-rail {
@@ -157,6 +155,17 @@ video::-webkit-media-controls-enclosure {
 .hide-cursor {
     cursor: none;
 }
+@media all and (max-width: 768px) {
+    .__cov-contrl-vol-slider {
+        width: 3rem;
+    }
+    .__cov-contrl-video-time {
+        padding: 0 .2rem;
+    }
+    .__cov-contrl-vol-box .__cov-contrl-play-btn {
+        width: 2rem;
+    }
+}
 </style>
 <template>
     <div id="app">
@@ -195,7 +204,7 @@ video::-webkit-media-controls-enclosure {
                     <div class="__cov-contrl-video-slider" @click="slideClick" @mousedown="videoMove">
                         <div class="__cov-contrl-video-inner" :style="{ 'transform': `translate3d(${video.pos.current}px, 0, 0)`}"></div>
                         <div class="__cov-contrl-video-rail">
-                            <div class="__cov-contrl-video-rail-inner" :style="{ 'transform': 'translateX(' +video.loaded + '%)'}"></div>
+                            <div class="__cov-contrl-video-rail-inner" :style="{ 'transform': 'translate3d(' +video.loaded + '%, 0, 0)'}"></div>
                         </div>
                     </div>
                     <div class="__cov-contrl-video-time">
