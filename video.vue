@@ -175,7 +175,7 @@ video::-webkit-media-controls-enclosure {
                     <source v-for="source in sources" :src="source.src" :type="source.type">
                     </source>
                 </video>
-                <div class="__cov-contrl-content" transition="fade" show="state.contrlShow">
+                <div class="__cov-contrl-content" transition="fade" v-show="state.contrlShow">
                     <button class="__cov-contrl-play-btn" @click="play">
                         <svg class="__cov-contrl-play-btn-icon" v-show="!state.playing" viewBox="0 0 47 57" version="1.1" xmlns="http://www.w3.org/2000/svg">
                             <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
