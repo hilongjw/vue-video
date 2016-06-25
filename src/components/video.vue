@@ -102,7 +102,17 @@
     width: 100%;
     height: .1rem;
     margin-top: -.05rem;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.5);
+    overflow: hidden;
+}
+.__cov-contrl-video-rail-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: .1rem;
+    background: rgb(255, 255, 255);
+    transition: transform .2s;
 }
 .__cov-contrl-video-inner {
     position: absolute;
@@ -184,7 +194,9 @@ video::-webkit-media-controls-enclosure {
                     </button>
                     <div class="__cov-contrl-video-slider" @click="slideClick" @mousedown="videoMove">
                         <div class="__cov-contrl-video-inner" :style="{ 'transform': `translate3d(${video.pos.current}px, 0, 0)`}"></div>
-                        <div class="__cov-contrl-video-rail"></div>
+                        <div class="__cov-contrl-video-rail">
+                            <div class="__cov-contrl-video-rail-inner" :style="{ 'transform': 'translateX(' +video.loaded + '%)'}"></div>
+                        </div>
                     </div>
                     <div class="__cov-contrl-video-time">
                         <span class="__cov-contrl-video-time-text">{{video.displayTime}}</span>
@@ -277,6 +289,7 @@ export default {
                 $videoSlider: null,
                 len: 0,
                 current: 0,
+                loaded: 0,
                 moving: false,
                 displayTime: '00:00',
                 pos: {
@@ -377,6 +390,12 @@ export default {
             this.state.contrlShow = !this.state.contrlShow
         },
         getTime () {
+            this.$video.addEventListener('durationchange', (e) => {
+                console.log(e)
+            })
+            this.$video.addEventListener('progress', (e) => {
+                this.video.loaded = (-1 + (this.$video.buffered.end(0) / this.$video.duration)) * 100
+            })
             this.video.len = this.$video.duration
         },
         setVideoByTime (percent) {
