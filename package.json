@@ -1,6 +1,6 @@
 {
   "name": "vue-video",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "A HTML5 video player for Vue.js",
   "author": "Awe <hilongjw@gmail.com>",
   "main": "video.vue",
