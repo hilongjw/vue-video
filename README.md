@@ -9,10 +9,10 @@ live demo is here: [https://hilongjw.github.io/vue-video/ocean.html](https://hil
 ![](https://raw.githubusercontent.com/hilongjw/vue-video/master/preview2.png)
 
 
-## Instllation
+## Installation
 ```bash
 
-npm i vue-video --save-dev
+npm i vue-video --save
 
 ```
 
