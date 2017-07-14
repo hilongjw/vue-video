@@ -40,7 +40,7 @@ export default {
         return {
             video: {
                 sources: [{
-                    src: 'http://covteam.u.qiniudn.com/oceans.mp4',
+                    src: 'http://vjs.zencdn.net/v/oceans.mp4',
                     type: 'video/mp4'
                 }],
                 options: {
