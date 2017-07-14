@@ -337,13 +337,10 @@ export default {
         }
     },
     ready () {
-        this.$video = this.$el.getElementsByTagName('video')[0]
         this.init()
-        if (this.options.autoplay) {
-            this.play()
-        }
-        document.body.addEventListener('mousemove', this.mouseMoveAction, false)
-        document.body.addEventListener('mouseup', this.mouseUpAction, false)
+    },
+    mounted () {
+        this.init()
     },
     beforeDestroy () {
         document.body.removeEventListener('mousemove', this.mouseMoveAction)
@@ -351,6 +348,15 @@ export default {
     },
     methods: {
         init () {
+            this.$video = this.$el.getElementsByTagName('video')[0]
+            this.initCore()
+            if (this.options.autoplay) {
+                this.play()
+            }
+            document.body.addEventListener('mousemove', this.mouseMoveAction, false)
+            document.body.addEventListener('mouseup', this.mouseUpAction, false)
+        },
+        initCore () {
             this.initVol()
             this.initVideo()
             this.initPlayer()
