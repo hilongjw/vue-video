@@ -4,7 +4,8 @@
 
 ## Demo
 
-live demo is here: [https://hilongjw.github.io/vue-video/ocean.html](https://hilongjw.github.io/vue-video/ocean.html )
+live demo is here: [https://hilongjw.github.io/vue-video/](https://hilongjw.github.io/vue-video/)
+
 ![](https://raw.githubusercontent.com/hilongjw/vue-video/master/preview.png)
 ![](https://raw.githubusercontent.com/hilongjw/vue-video/master/preview2.png)
 
