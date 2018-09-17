@@ -94,6 +94,9 @@
     margin: 0 .5rem;
     transition: all .2s ease-in;
 }
+.__cov-contrl-video-slider.no-scrub {
+  pointer-events: none;
+}
 .__cov-contrl-video-rail {
     position: absolute;
     top: 50%;
@@ -172,7 +175,7 @@ video::-webkit-media-controls-enclosure {
         <div class="container">
             <div class="__cov-video-container" @mouseenter="mouseEnterVideo" @mouseleave="mouseLeaveVideo">
                 <video :class="{ 'hide-cursor': !state.contrlShow }" class="__cov-video" :poster="options.poster">
-                    <source v-for="source in sources" :src="source.src" :type="source.type">
+                    <source v-for="source in sources" :src="source.src" :type="source.type" :key="source.src">
                     </source>
                 </video>
                 <div class="__cov-contrl-content" transition="fade" v-show="state.contrlShow">
@@ -201,7 +204,7 @@ video::-webkit-media-controls-enclosure {
                             </g>
                         </svg>
                     </button>
-                    <div class="__cov-contrl-video-slider" @click="slideClick" @mousedown="videoMove">
+                    <div class="__cov-contrl-video-slider" @click="slideClick" @mousedown="videoMove" :class="{'no-scrub': options.noScrub}">
                         <div class="__cov-contrl-video-inner" :style="{ 'transform': `translate3d(${video.pos.current}px, 0, 0)`}"></div>
                         <div class="__cov-contrl-video-rail">
                             <div class="__cov-contrl-video-rail-inner" :style="{ 'transform': 'translate3d(' +video.loaded + '%, 0, 0)'}"></div>
@@ -286,7 +289,8 @@ export default {
                 return {
                     autoplay: false,
                     volume: 0.9,
-                    poster: ''
+                    poster: '',
+                    noScrub: false
                 }
             }
         }
@@ -437,6 +441,9 @@ export default {
             const percent = this.$video.currentTime / this.$video.duration
             this.video.pos.current = (this.video.pos.width * percent).toFixed(3)
             this.video.displayTime = timeParse(this.$video.duration - this.$video.currentTime)
+            if (percent === 1) {
+                this.$emit('video-ended', true)
+            }
         },
         volMove (e) {
             this.initVol()
