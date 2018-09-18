@@ -176,7 +176,7 @@ video::-webkit-media-controls-enclosure {
                     </source>
                 </video>
                 <div class="__cov-contrl-content" transition="fade" v-show="state.contrlShow">
-                    <button class="__cov-contrl-play-btn" @click="play">
+                    <button class="__cov-contrl-play-btn" @click.stop="play">
                         <svg class="__cov-contrl-play-btn-icon" v-show="!state.playing" viewBox="0 0 47 57" version="1.1" xmlns="http://www.w3.org/2000/svg">
                             <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
                             <title>Triangle 1</title>
@@ -409,7 +409,7 @@ export default {
                 console.log(e)
             })
             this.$video.addEventListener('progress', (e) => {
-                this.video.loaded = (-1 + (this.$video.buffered.end(0) / this.$video.duration)) * 100
+                this.$video.buffered.length > 0 && (this.video.loaded = (-1 + (this.$video.buffered.end(0) / this.$video.duration)) * 100)
             })
             this.video.len = this.$video.duration
         },
@@ -417,9 +417,9 @@ export default {
             this.$video.currentTime = Math.floor(percent * this.video.len)
         },
         play () {
-            this.state.playing = !this.state.playing
+            const playing = this.state.playing
             if (this.$video) {
-                if (this.state.playing) {
+                if (!playing) {
                     this.$video.play()
                     this.mouseLeaveVideo()
                     this.$video.addEventListener('timeupdate', this.timeline)
@@ -432,6 +432,7 @@ export default {
                     this.$video.pause()
                 }
             }
+            this.state.playing = !playing
         },
         timeline () {
             const percent = this.$video.currentTime / this.$video.duration
